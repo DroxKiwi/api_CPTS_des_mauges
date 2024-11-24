@@ -11,7 +11,9 @@ from fastapi import Body, FastAPI, Request, UploadFile, status, HTTPException, F
 from pydantic import BaseModel, RootModel
 from admin import admin
 from articles import articles
+from events import events
 from tags import tags
+from prods import prods
 from fastapi.middleware.cors import CORSMiddleware
 from google.oauth2 import id_token
 from bdd.cpts import tusers
@@ -33,10 +35,13 @@ main = FastAPI(
 
 main.include_router(admin.admin)
 main.include_router(articles.articles)
+main.include_router(events.events)
 main.include_router(tags.tags)
+main.include_router(prods.prods)
 
 origins = [
-    "http://localhost:3000"
+    "http://localhost:3000",
+    "http://localhost:3001"
 ]
 
 main.add_middleware(
@@ -50,6 +55,7 @@ main.add_middleware(
 class userIdentity(BaseModel):
     user_id:Optional[int]
     username:Optional[str]
+    adminofurl:Optional[str]
     accesstoken:Optional[str]
     bearertoken:Optional[Token]
     password:Optional[str]
@@ -86,6 +92,7 @@ async def checkUserToken(accesstoken: Annotated[str,Form()], response: Response)
         userdata=userIdentity(
             user_id=user.user_id,
             username=user.username,
+            adminofurl=user.adminofurl,
             accesstoken=user.accesstoken,
             bearertoken=bearertoken,
             password=None,
@@ -135,3 +142,10 @@ def login_for_access_token(user_token: Annotated[str, Form()]) -> Token:
         data={"sub": user.accesstoken}, expires_delta=access_token_expires
     )
     return Token(access_token=access_token, token_type="bearer", expires_in=ACCESS_TOKEN_EXPIRE_MINUTES)
+
+@main.get('/test')
+def test():
+    try:
+        return "API joignable"
+    except Exception as e:
+        print(e)
