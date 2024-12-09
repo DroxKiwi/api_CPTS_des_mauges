@@ -29,7 +29,7 @@ class event(BaseModel):
     actif:Optional[bool]
 
 @events.get("/all", tags=['events'])
-async def get_events(current_user: Annotated[User, Depends(get_current_active_user)]):
+async def get_events():
     try:
         data:tevents = tevents().readWhere(f"1 = 1")
         response = []
@@ -53,7 +53,7 @@ async def get_events(current_user: Annotated[User, Depends(get_current_active_us
         raise HTTPException(status_code=500,detail=[])
 
 @events.get("/byid/{event_id}", tags=['events'])
-async def get_events(current_user: Annotated[User, Depends(get_current_active_user)], event_id:int):
+async def get_events(event_id:int):
     try:
         data:tevents = tevents().readId(str(event_id))
         r = event(

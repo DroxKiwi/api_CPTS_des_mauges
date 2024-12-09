@@ -21,7 +21,7 @@ class tag(BaseModel):
     actif:Optional[bool]
 
 @tags.get("/all", tags=['tags'])
-async def get_articles(current_user: Annotated[User, Depends(get_current_active_user)]):
+async def get_articles():
     try:
         data:ttags = ttags().readWhere(f"1 = 1")
         response = []
@@ -39,7 +39,7 @@ async def get_articles(current_user: Annotated[User, Depends(get_current_active_
         raise HTTPException(status_code=500,detail=[])
 
 @tags.get("/byid/{tag_id}", tags=['tags'])
-async def get_articles(current_user: Annotated[User, Depends(get_current_active_user)], tag_id:int):
+async def get_articles(tag_id:int):
     try:
         data:ttags = ttags().readId(tag_id)
         r = tag(
