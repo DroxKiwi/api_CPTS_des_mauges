@@ -20,6 +20,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from google.oauth2 import id_token
 from bdd.cpts import tusers
 import uuid
+from fastapi import FastAPI, APIRouter
 
 from auth import *
 
@@ -34,6 +35,7 @@ main = FastAPI(
     #redoc_url=None,
     #openapi_url=None
 )
+router = APIRouter()
 
 main.include_router(admin.admin)
 main.include_router(articles.articles)
@@ -45,7 +47,11 @@ main.include_router(globaldatas.globaldatas)
 
 origins = [
     "http://localhost:3000",
-    "http://localhost:3001"
+    "http://localhost:3001",
+    "https://www.cptsdesmauges.fr",
+    "http://www.cptsdesmauges.fr",  # Pour http, si applicable
+    "https://cptsdesmauges.fr",
+    "http://cptsdesmauges.fr"
 ]
 
 main.add_middleware(
@@ -153,3 +159,4 @@ def test():
         return "API joignable"
     except Exception as e:
         print(e)
+
