@@ -16,6 +16,8 @@ from tags import tags
 from prods import prods
 from patds import patds
 from globaldatas import globaldatas
+from orgas import orgas
+from livret_pages import livret_pages
 from fastapi.middleware.cors import CORSMiddleware
 from google.oauth2 import id_token
 from bdd.cpts import tusers
@@ -44,6 +46,8 @@ main.include_router(tags.tags)
 main.include_router(prods.prods)
 main.include_router(patds.patds)
 main.include_router(globaldatas.globaldatas)
+main.include_router(orgas.orgas)
+main.include_router(livret_pages.livretpages)
 
 origins = [
     "http://localhost:3000",
@@ -53,6 +57,8 @@ origins = [
     "https://cptsdesmauges.fr",
     "http://cptsdesmauges.fr"
 ]
+
+#origins = ["*"]
 
 main.add_middleware(
     CORSMiddleware,

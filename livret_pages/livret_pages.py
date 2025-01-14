@@ -24,7 +24,7 @@ class livretpage(BaseModel):
 @livretpages.get("/all", tags=['livretpages'])
 async def get_livretpages():
     try:
-        data:tlivret_pages = tlivret_pages().readWhere(f"1 = 1")
+        data:tlivret_pages = tlivret_pages().readWhere(f"1 = 1 order by numero_page asc")
         response = []
         for res in data:
             r = livretpage(
@@ -55,22 +55,34 @@ async def get_articles(livret_pages_id:int):
 @livretpages.post("/new", tags=['livretpages'])
 async def create_event(current_user: Annotated[User, Depends(get_current_active_user)]):
     try:
-        newPatd = tlivret_pages()
+        newLivretPage = tlivret_pages()
         alllp = tlivret_pages().readWhere("1 = 1")
         ind = 0
         for l in alllp:
             ind += 1
         ind += 1
-        newPatd.patf_ids = ''
-        newPatd.name = f"Nouveau dossier {ind}"
-        newPatd.img = defaultImg
-        newPatd.actif = True
-        oCnx = newPatd.oCnx
+        newLivretPage.numero_page = ind
+        newLivretPage.img = defaultImg
+        newLivretPage.actif = True
+        oCnx = newLivretPage.oCnx
         curs = oCnx.cursor()
-        curs.execute(newPatd.insert())
+        curs.execute(newLivretPage.insert())
         oCnx.commit()
         curs.close()
         return {'result':'done'}
+    except Exception as e:
+        print(e)
+        raise HTTPException(status_code=500, detail=["Une erreur est survenue"])
+
+@livretpages.post("/remove", tags=['livretpages'])
+async def remove_article(current_user: Annotated[User, Depends(get_current_active_user)], livret_pages_id: int = Form()):
+    try:
+        livretpageToDelete:tlivret_pages = tlivret_pages().readId(str(livret_pages_id))
+        oCnx = livretpageToDelete.oCnx
+        curs = oCnx.cursor()
+        curs.execute(livretpageToDelete.delete())
+        oCnx.commit()
+        curs.close()
     except Exception as e:
         print(e)
         raise HTTPException(status_code=500, detail=["Une erreur est survenue"])
