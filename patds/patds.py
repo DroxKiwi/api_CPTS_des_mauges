@@ -93,10 +93,13 @@ async def remove_event(current_user: Annotated[User, Depends(get_current_active_
         raise HTTPException(status_code=500, detail=["Une erreur est survenue"])
     
 @patds.post("/update", tags=['patds'])
-async def update_article(current_user: Annotated[User, Depends(get_current_active_user)], patd_id: int= Form(), patf_ids: str=Form(),  name: str= Form(), img: str= Form(), actif: bool= Form()):
+async def update_article(current_user: Annotated[User, Depends(get_current_active_user)], patd_id: int= Form(), patf_ids: str=Form(), name: str= Form(), img: str= Form(), actif: bool= Form()):
     try:
         patdToUpdate:tpatd = tpatd().readId(str(patd_id))
-        patdToUpdate.patf_ids = patf_ids
+        if patf_ids == 'null':
+            patdToUpdate.patf_ids = ""
+        else:
+            patdToUpdate.patf_ids = patf_ids
         patdToUpdate.name = name
         patdToUpdate.img = img
         patdToUpdate.actif = actif

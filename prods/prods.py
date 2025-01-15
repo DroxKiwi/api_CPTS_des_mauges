@@ -93,10 +93,13 @@ async def remove_event(current_user: Annotated[User, Depends(get_current_active_
         raise HTTPException(status_code=500, detail=["Une erreur est survenue"])
     
 @prods.post("/update", tags=['prods'])
-async def update_article(current_user: Annotated[User, Depends(get_current_active_user)], prod_id: int= Form(), prof_ids: str=Form(),  name: str= Form(), img: str= Form(), actif: bool= Form()):
+async def update_article(current_user: Annotated[User, Depends(get_current_active_user)], prod_id: int= Form(), prof_ids: str=Form(), name: str= Form(), img: str= Form(), actif: bool= Form()):
     try:
         prodToUpdate:tprod = tprod().readId(str(prod_id))
-        prodToUpdate.prof_ids = prof_ids
+        if prof_ids == 'null':
+            prodToUpdate.prof_ids = ""
+        else:
+            prodToUpdate.prof_ids = prof_ids
         prodToUpdate.name = name
         prodToUpdate.img = img
         prodToUpdate.actif = actif
@@ -123,7 +126,7 @@ class prof(BaseModel):
     actif:Optional[bool]
 
 @prods.get("/prof/all", tags=['prods'])
-async def get_events(current_user: Annotated[User, Depends(get_current_active_user)]):
+async def get_events():
     try:
         data:tprof = tprof().readWhere(f"1 = 1")
         response = []
@@ -144,7 +147,7 @@ async def get_events(current_user: Annotated[User, Depends(get_current_active_us
         raise HTTPException(status_code=500,detail=[])
 
 @prods.get("/prof/byid/{prof_id}", tags=['prods'])
-async def get_articles(current_user: Annotated[User, Depends(get_current_active_user)], prof_id:int):
+async def get_articles(prof_id:int):
     try:
         data:tprof = tprof().readId(str(prof_id))
         r = prof(
