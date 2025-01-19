@@ -18,6 +18,7 @@ from patds import patds
 from globaldatas import globaldatas
 from orgas import orgas
 from livret_pages import livret_pages
+from coassos import coassos
 from fastapi.middleware.cors import CORSMiddleware
 from google.oauth2 import id_token
 from bdd.cpts import tusers
@@ -48,6 +49,7 @@ main.include_router(patds.patds)
 main.include_router(globaldatas.globaldatas)
 main.include_router(orgas.orgas)
 main.include_router(livret_pages.livretpages)
+main.include_router(coassos.coassos)
 
 origins = [
     "http://localhost:3000",
